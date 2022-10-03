@@ -1,23 +1,45 @@
-import logo from './logo.svg';
+import { useState } from "react";
 import './App.css';
 
 function App() {
+  const [data, setData] = useState([]);
+  const [items, setItems] = useState({
+    title: ""
+  });
+
+  const handleChange = (e) => {
+    const { target: { value, name } } = e;
+    setItems((item) => ({...item, [name]:value}))
+  }
+
+  const AddItem = () => {
+    setData((prev) => [...prev, { id: data.length+1, items, completed: false }])
+  }
+
+  const toggleCompleted = (id) => {
+    setData((prev) => {
+      return prev.map((prevData) => {
+        return prevData.id === id ? { ...prevData, completed: !prevData.completed } : { ...prevData }
+      })
+    })
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>TODO APP</h1>
+      <input name="title" onChange={handleChange} placeholder="Enter What You Want To Do Here" />
+      <br />
+      <button onClick={AddItem}>Add</button>
+      <br />
+      {
+        data.length > 0 && data.map((item) => (
+        <div key={item.id}>
+          <h1>{item.items.title}</h1>
+          <h3>{item.completed === true ? "completed" : "not completed"}</h3>
+          <button onClick={() => toggleCompleted(item.id)}>DONE</button>
+        </div>
+        ))
+      }
     </div>
   );
 }
